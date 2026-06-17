@@ -7,24 +7,50 @@ interface Props {
   currentId?: string
 }
 
-const MODIFIER_KEYS = new Set(['Control', 'Meta', 'Alt', 'Shift'])
+const MODIFIER_KEYS = new Set(['Control', 'Meta', 'Alt', 'Shift', 'CapsLock', 'NumLock', 'ScrollLock'])
+
+// e.code → Electron accelerator key name (fiziksel tuş, layout bağımsız)
+const CODE_TO_KEY: Record<string, string> = {
+  Space: 'Space', Enter: 'Return', Backspace: 'Backspace', Tab: 'Tab',
+  Escape: 'Escape', Delete: 'Delete', Insert: 'Insert',
+  Home: 'Home', End: 'End', PageUp: 'PageUp', PageDown: 'PageDown',
+  ArrowUp: 'Up', ArrowDown: 'Down', ArrowLeft: 'Left', ArrowRight: 'Right',
+  F1: 'F1', F2: 'F2', F3: 'F3', F4: 'F4', F5: 'F5', F6: 'F6',
+  F7: 'F7', F8: 'F8', F9: 'F9', F10: 'F10', F11: 'F11', F12: 'F12',
+  F13: 'F13', F14: 'F14', F15: 'F15', F16: 'F16', F17: 'F17', F18: 'F18',
+  F19: 'F19', F20: 'F20', F21: 'F21', F22: 'F22', F23: 'F23', F24: 'F24',
+  Numpad0: 'num0', Numpad1: 'num1', Numpad2: 'num2', Numpad3: 'num3',
+  Numpad4: 'num4', Numpad5: 'num5', Numpad6: 'num6', Numpad7: 'num7',
+  Numpad8: 'num8', Numpad9: 'num9',
+  NumpadAdd: 'numadd', NumpadSubtract: 'numsub', NumpadMultiply: 'nummult',
+  NumpadDivide: 'numdiv', NumpadDecimal: 'numdec',
+  Minus: '-', Equal: '=', BracketLeft: '[', BracketRight: ']',
+  Backslash: '\\', Semicolon: ';', Quote: "'", Backquote: '`',
+  Comma: ',', Period: '.', Slash: '/',
+}
 
 function toAccelerator(e: KeyboardEvent): string | null {
   if (MODIFIER_KEYS.has(e.key)) return null
 
   const parts: string[] = []
-  if (e.ctrlKey) parts.push('CommandOrControl')
-  else if (e.metaKey) parts.push('CommandOrControl')
+  if (e.ctrlKey || e.metaKey) parts.push('CommandOrControl')
   if (e.altKey) parts.push('Alt')
   if (e.shiftKey) parts.push('Shift')
 
-  let key = e.key
-  if (key === ' ') key = 'Space'
-  else if (key.length === 1) key = key.toUpperCase()
-  else if (key === 'ArrowUp') key = 'Up'
-  else if (key === 'ArrowDown') key = 'Down'
-  else if (key === 'ArrowLeft') key = 'Left'
-  else if (key === 'ArrowRight') key = 'Right'
+  // Önce code map'e bak, sonra letter/digit kodu dene
+  let key: string | undefined = CODE_TO_KEY[e.code]
+
+  if (!key) {
+    // KeyA → 'A', Digit1 → '1'
+    if (/^Key[A-Z]$/.test(e.code)) {
+      key = e.code.slice(3) // 'KeyA' → 'A'
+    } else if (/^Digit[0-9]$/.test(e.code)) {
+      key = e.code.slice(5) // 'Digit1' → '1'
+    }
+  }
+
+  if (!key) return null
+  if (parts.length === 0) return null // Modifier'sız tek tuş accelerator olarak kaydedilmez
 
   parts.push(key)
   return parts.join('+')

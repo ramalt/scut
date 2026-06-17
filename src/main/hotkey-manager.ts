@@ -7,25 +7,40 @@ export function setWindow(win: BrowserWindow): void {
   mainWindow = win
 }
 
+function isValidAccelerator(acc: string): boolean {
+  // Electron yalnızca ASCII accelerator kabul ediyor
+  return /^[\x00-\x7F]+$/.test(acc)
+}
+
 export function register(binding: Binding): boolean {
   if (!binding.enabled || !binding.accelerator) return false
+  if (!isValidAccelerator(binding.accelerator)) return false
 
-  if (globalShortcut.isRegistered(binding.accelerator)) {
-    globalShortcut.unregister(binding.accelerator)
-  }
-
-  const success = globalShortcut.register(binding.accelerator, () => {
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('play-sound', binding.id)
+  try {
+    if (globalShortcut.isRegistered(binding.accelerator)) {
+      globalShortcut.unregister(binding.accelerator)
     }
-  })
 
-  return success
+    const success = globalShortcut.register(binding.accelerator, () => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('play-sound', binding.id)
+      }
+    })
+
+    return success
+  } catch {
+    return false
+  }
 }
 
 export function unregister(accelerator: string): void {
-  if (globalShortcut.isRegistered(accelerator)) {
-    globalShortcut.unregister(accelerator)
+  if (!accelerator || !isValidAccelerator(accelerator)) return
+  try {
+    if (globalShortcut.isRegistered(accelerator)) {
+      globalShortcut.unregister(accelerator)
+    }
+  } catch {
+    // ignore invalid accelerator
   }
 }
 

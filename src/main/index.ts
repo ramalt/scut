@@ -6,6 +6,12 @@ import { registerHandlers } from './ipc-handlers'
 
 const isDev = process.env['NODE_ENV'] === 'development' || !!process.env['ELECTRON_RENDERER_URL']
 
+// Tek instance zorunluluğu — ikinci instance açılmaya çalışılırsa mevcut pencere öne getirilir
+const gotLock = app.requestSingleInstanceLock()
+if (!gotLock) {
+  app.quit()
+}
+
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
 
@@ -105,12 +111,10 @@ app.on('window-all-closed', () => {
   }
 })
 
-if (isDev) {
-  app.on('second-instance', () => {
-    mainWindow?.show()
-    mainWindow?.focus()
-  })
-}
+app.on('second-instance', () => {
+  mainWindow?.show()
+  mainWindow?.focus()
+})
 
 // Suppress security warning for dev
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'

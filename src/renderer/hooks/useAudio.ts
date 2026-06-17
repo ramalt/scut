@@ -41,7 +41,7 @@ export function useAudio(bindings: Binding[], globalVolume: number) {
         howl.play()
       }
     })
-    return unsubscribe
+    return () => { unsubscribe() }
   }, [])
 
   const playPreview = useCallback((id: string) => {

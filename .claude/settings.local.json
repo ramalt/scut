@@ -22,7 +22,12 @@
       "Bash(node /tmp/debug_patch.js)",
       "Bash(npm run *)",
       "Bash(kill %1)",
-      "Bash(/Users/ram/workspaces/scut/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /tmp/test_eapp.js)"
+      "Bash(/Users/ram/workspaces/scut/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /tmp/test_eapp.js)",
+      "Bash(node -e \"console.log\\(require\\('electron'\\)\\)\")",
+      "Bash(node -e \"const ev = require\\('./node_modules/electron-vite'\\); console.log\\(Object.keys\\(ev\\)\\)\")",
+      "Bash(node_modules/electron/dist/Electron.app/Contents/MacOS/Electron --version)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Version:', d['version']\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d.get\\(k\\) for k in ['main','exports','browser','module']}, indent=2\\)\\)\")"
     ]
   }
 }
