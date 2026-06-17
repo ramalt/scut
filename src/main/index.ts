@@ -2,7 +2,7 @@ import { app, BrowserWindow, Tray, Menu, nativeImage } from 'electron'
 import { join } from 'path'
 import * as hotkeyManager from './hotkey-manager'
 import * as store from './store'
-import { registerHandlers } from './ipc-handlers'
+import { registerHandlers, seedDefaultsIfNeeded } from './ipc-handlers'
 
 const isDev = process.env['NODE_ENV'] === 'development' || !!process.env['ELECTRON_RENDERER_URL']
 
@@ -89,6 +89,7 @@ app.whenReady().then(() => {
   createTray()
 
   hotkeyManager.setWindow(mainWindow!)
+  seedDefaultsIfNeeded()
   const bindings = store.getBindings()
   hotkeyManager.registerAll(bindings)
 

@@ -25,6 +25,27 @@ function copyToUserData(srcPath: string): string {
   return dest
 }
 
+export function seedDefaultsIfNeeded(): void {
+  if (store.getBindings().length > 0) return
+
+  // Bundled resources klasöründen fahh.mp3'ü userData/sounds/ altına kopyala
+  const resourcesPath = process.resourcesPath
+  const src = path.join(resourcesPath, 'fahh.mp3')
+  if (!fs.existsSync(src)) return
+
+  const dest = copyToUserData(src)
+  const binding: Binding = {
+    id: uuidv4(),
+    name: 'Fahh',
+    filePath: dest,
+    accelerator: 'CommandOrControl+Shift+F',
+    volume: 1.0,
+    enabled: true
+  }
+  store.addBinding(binding)
+  hotkeyManager.register(binding)
+}
+
 export function registerHandlers(): void {
   ipcMain.handle('get-bindings', () => {
     return store.getBindings()
