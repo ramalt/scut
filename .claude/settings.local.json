@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/ram/workspaces/**)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(npx electron-vite *)",
+      "Bash(npx electron *)",
+      "Bash(./node_modules/.bin/electron .)",
+      "Bash(./node_modules/.bin/electron --version)",
+      "Bash(node -e \"const e = require\\('./node_modules/electron'\\); console.log\\(typeof e, Object.keys\\(e\\).slice\\(0,5\\)\\)\")",
+      "Bash(npm list *)",
+      "Bash(node -e ' *)",
+      "Bash(/Users/ram/workspaces/scut/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /tmp/test_electron.js)",
+      "Bash(node -e \"const s = require\\('./node_modules/electron-store/index.js'\\); console.log\\(typeof s\\);\")",
+      "Bash(cat)",
+      "Bash(mkdir -p /tmp/etest)",
+      "Bash(cp /tmp/test_main.js /tmp/etest/main.js)",
+      "Bash(echo '{\"name\":\"test\",\"main\":\"main.js\"}')",
+      "Read(//tmp/**)",
+      "Bash(timeout 8 npm run dev)",
+      "Bash(node /tmp/debug_patch.js)",
+      "Bash(npm run *)",
+      "Bash(kill %1)",
+      "Bash(/Users/ram/workspaces/scut/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron /tmp/test_eapp.js)"
+    ]
+  }
+}
