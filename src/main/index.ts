@@ -14,6 +14,7 @@ if (!gotLock) {
 
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
+let isQuitting = false
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -31,6 +32,7 @@ function createWindow(): void {
   })
 
   mainWindow.on('close', (e) => {
+    if (isQuitting) return
     e.preventDefault()
     mainWindow?.hide()
   })
@@ -54,6 +56,8 @@ function createTray(): void {
 
   tray = new Tray(icon)
   tray.setToolTip('Scut — Soundboard')
+  // İkon dosyası yoksa menü çubuğunda tray görünmez kalır; metin göster
+  if (icon.isEmpty()) tray.setTitle('Scut')
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -100,6 +104,10 @@ app.whenReady().then(() => {
       mainWindow?.show()
     }
   })
+})
+
+app.on('before-quit', () => {
+  isQuitting = true
 })
 
 app.on('will-quit', () => {
